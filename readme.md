@@ -1,94 +1,6 @@
 # Firebase Cloud Messaging With Nodejs
-Hey copilot here is the node server code to document:
-/**
- * @file This file contains the server code for sending push notifications using Firebase Cloud Messaging.
- */
-
-import { initializeApp, applicationDefault } from 'firebase-admin/app'
-import { getMessaging } from 'firebase-admin/messaging'
-import express, { json } from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-
-dotenv.config()
-
-process.env.GOOGLE_APPLICATION_CREDENTIALS
-
-const app = express()
-app.use(express.json())
-
-app.use(
-  cors({
-    origin: '*',
-  })
-)
-
-app.use(
-  cors({
-    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  })
-)
-
-app.use(function (req, res, next) {
-  res.setHeader('Content-Type', 'application/json')
-  next()
-})
-
-/**
- * Initializes the Firebase app with the default credentials and project ID from the environment variables.
- */
-initializeApp({
-  credential: applicationDefault(),
-  projectId: process.env.FIREBASE_PROJECT_ID,
-})
-
-/**
- * Endpoint for sending push notifications.
- * @name POST /send
- * @function
- * @param {Object} req - The request object.
- * @param {Object} req.body - The request body containing the title, body, and token for the push notification.
- * @param {string} req.body.title - The title of the push notification.
- * @param {string} req.body.body - The body of the push notification.
- * @param {string} req.body.token - The token of the device to receive the push notification.
- * @param {Object} res - The response object.
- */
-app.post('/send', function (req, res) {
-  const { title, body, token } = req.body
-
-  const message = {
-    notification: {
-      title,
-      body,
-    },
-    token,
-  }
-
-  getMessaging()
-    .send(message)
-    .then((response) => {
-      res.status(200).json({
-        message: 'Successfully sent message',
-        token: token,
-      })
-      console.log('Successfully sent message:', response)
-    })
-    .catch((error) => {
-      res.status(400)
-      res.send(error)
-      console.log('Error sending message:', error)
-    })
-})
-
-app.listen(3000, function () {
-  console.log('Server started on port 3000')
-})
 
 This is a simple example of how to send push notifications to Web, Android and iOS using Firebase Cloud Messaging (FCM) with Nodejs.
-
-## Demo Video
-
-![](./demo.mp4)
 
 ## Prerequisites
 
@@ -105,5 +17,70 @@ This is a simple example of how to send push notifications to Web, Android and i
 1. Clone the repository:
 
 ```bash
-git clone
+git clone https://github.com/ZineddineBk09/Firebase-Cloud-Messaging-With-Nodejs.git
 ```
+
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+3. Create a new file called .env and add the following environment variables:
+
+```env
+FIREBASE_PROJECT_ID=your-firebase-project-id
+GOOGLE_APPLICATION_CREDENTIALS=firebase-credentials.json
+```
+
+4. Run the server:
+
+```bash
+npm start
+```
+
+5. Send a POST request to the /send endpoint with the following JSON body:
+
+```json
+{
+  "title": "Hello",
+  "body": "This is a test notification",
+  "token": "your-device-registration-token"
+}
+```
+
+6. I've also included a simple web pagein frontend folder to test the notifications. You can run it using the following commands:
+
+```bash
+cd frontend
+```
+
+```bash
+python3 -m http.server 8000
+```
+
+7. Open your browser and go to http://localhost:8000, and a pop should appear asking for permission to send notifications.
+
+8. If you accept, you can send a test notification by filling the form and clicking the "Send" button.
+
+> [!IMPORTANT]  
+> If everything is set up correctly, the token input should be automatically filled with the device registration token.
+> 
+![](./static/frontend.png)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Express](https://expressjs.com/)
+- [Cors](https://www.npmjs.com/package/cors)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Node.js](https://nodejs.org/)
+
+## Author
+
+- **Zineddine Benkhaled** - [ZineddineBk09](https://github.com/ZineddineBk09)

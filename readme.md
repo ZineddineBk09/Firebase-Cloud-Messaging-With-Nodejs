@@ -65,12 +65,8 @@ python3 -m http.server 8000
 
 > [!IMPORTANT]  
 > If everything is set up correctly, the token input should be automatically filled with the device registration token.
-> 
-![](./static/frontend.png)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+>
+> ![](./static/frontend.png)
 
 ## Acknowledgments
 

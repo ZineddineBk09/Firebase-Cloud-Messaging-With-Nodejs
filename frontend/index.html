@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>FCM</title>
+  </head>
+  <!-- this html file is proof of concept to test firebase cloud messaging -->
+  <body class="flex flex-col items-center w-full">
+    <header>
+      <h1 class="text-4xl font-bold">Firebase Cloud Messaging</hjson>
+      <p class="text-lg">This is a proof of concept to test firebase cloud messaging</p>
+      <form 
+        class="flex flex-col items-center"
+        id="form"
+      >
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          class="border-2 border-gray-300 p-2 m-2"
+        />
+        <input
+          type="text"
+          name="body"
+          placeholder="Body"
+          class="border-2 border-gray-300 p-2 m-2"
+        />
+        <input
+          type="text"
+          name="token"
+          placeholder="Token"
+          class="border-2 border-gray-300 p-2 m-2"
+        />
+        <button
+          type="submit"
+          class="bg-blue-500 text-white p-2 m-2 rounded-lg"
+        >
+          Send
+        </button>
+      </form>
+
+    </header>
+
+    <main>
+      <section>
+        <h2 class="text-2xl font-bold">Notifications</h2>
+        <ul>
+         
+        </ul>
+      </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase-messaging.js"></script>
+
+    <script>
+      const form = document.getElementById("form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const title = form.title.value;
+        const body = form.body.value;
+        const token = form.token.value;
+
+        fetch("http://localhost:3000/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title:'FleetRun',
+            body,
+            token,
+          }),
+        });
+      })
+
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey:"AIzaSyC-Rn-7LsmkXlPzh0VT3Ndlk2ZxBsRIU3Q",
+        authDomain:"fleetrun-support.firebaseapp.com",
+        projectId:"fleetrun-support",
+        storageBucket:"fleetrun-support.appspot.com",
+        messagingSenderId:"918925333586",
+        appId:"1:918925333586:web:4fd18a1a2bf73e14803b8b",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const messaging = firebase.messaging();
+      messaging
+        .requestPermission()
+        .then(function () {
+          console.log("Notification permission granted.");
+          return messaging.getToken();
+        })
+        .then(function (token) {
+          console.log(token);
+          document.querySelector("input[name=title]").value = "FleetRun";
+          document.querySelector("input[name=token]").value = token;
+        })
+        .catch(function (err) {
+          console.log("Unable to get permission to notify.", err);
+        });
+
+      messaging.onMessage(function (payload) {
+        console.log("Message received. ", payload);
+        const { title, body } = payload.notification;
+
+        // apend new notification to the list
+        const notifications = document.querySelector("ul");
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <p class="text-lg">Title: <span class="font-bold">${title}</span></p>
+          <p class="text-lg">Body: <span class="font-bold">${body}</span></p>
+        `;
+        notifications.appendChild(li);
+      });
+
+      // display browser notification
+      messaging.onMessage(function (payload) {
+        const { title, body } = payload.notification;
+        new Notification(title, { body,
+        badge: './logo.png',
+        tag: 'fleetrun-notification',
+        icon: './logo.png',
+        vibrate: [200, 100, 200, 100, 200, 100, 200], // Vibration pattern.
+        });
+      });
+    </script>
+  </body>
+</html>

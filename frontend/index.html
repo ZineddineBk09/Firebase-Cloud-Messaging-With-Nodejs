@@ -47,8 +47,7 @@
     <main>
       <section>
         <h2 class="text-2xl font-bold">Notifications</h2>
-        <ul>
-         
+        <ul>       
         </ul>
       </section>
     </main>
@@ -122,9 +121,9 @@
       messaging.onMessage(function (payload) {
         const { title, body } = payload.notification;
         new Notification(title, { body,
-        badge: './logo.png',
+        badge: './static/logo.png',
         tag: 'fleetrun-notification',
-        icon: './logo.png',
+        icon: './static/logo.png',
         vibrate: [200, 100, 200, 100, 200, 100, 200], // Vibration pattern.
         });
       });
